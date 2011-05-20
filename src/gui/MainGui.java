@@ -8,12 +8,15 @@ import java.awt.event.ActionListener;
 import java.util.Random;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import backend.Cell;
 import backend.SaveLoadHandler;
+
 
 @SuppressWarnings("serial")
 public class MainGui extends JFrame implements ActionListener {
@@ -31,9 +34,13 @@ public class MainGui extends JFrame implements ActionListener {
 	private JButton random = new JButton("random");
 	private JButton save = new JButton("save");
 	private JButton load = new JButton("load");
-	private JTextField numRounds = new JTextField(5);
+	private JTextField numRounds = new JTextField(3);
+	private JTextField pauseTime = new JTextField(4);
+	private JLabel pauseTimeLab = new JLabel("ms pause");
 	private JPanel center = new JPanel();
 
+	private final JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
+	
 	private int rounds;
 
 	/**
@@ -46,7 +53,7 @@ public class MainGui extends JFrame implements ActionListener {
 	public MainGui() {
 		setTitle("Game Of Life");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(700, 570);
+		setSize(805, 615);
 		setLayout(new BorderLayout());
 
 		JPanel bottom = new JPanel(new FlowLayout());
@@ -61,6 +68,8 @@ public class MainGui extends JFrame implements ActionListener {
 		save.addActionListener(this);
 		load.addActionListener(this);
 
+		bottom.add(pauseTime);
+		bottom.add(pauseTimeLab);
 		bottom.add(numRounds);
 		bottom.add(run);
 		bottom.add(next);
@@ -109,7 +118,7 @@ public class MainGui extends JFrame implements ActionListener {
 							numRounds.setText((rounds - (i + 1)) + "");
 							nextRound();
 							try {
-								Thread.sleep(500);
+								Thread.sleep(Integer.parseInt(pauseTime.getText().equals("") ? "500" : pauseTime.getText()));
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -138,21 +147,21 @@ public class MainGui extends JFrame implements ActionListener {
 			}).start();
 		}
 		else if (e.getSource() == save) {
-			new Thread(new Runnable() {
-				public void run() {
-					SaveLoadHandler.saveToFile(cells, "/tmp/gol.txt");
-					activateButtons();
-				};
-			}).start();
+			int returnVal = chooser.showSaveDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				System.out.println("You chose to save to this file: " + chooser.getSelectedFile().getAbsolutePath());
+				SaveLoadHandler.saveToFile(cells, chooser.getSelectedFile());
+			}
+			activateButtons();
 		}
 		else if (e.getSource() == load) {
-			new Thread(new Runnable() {
-				public void run() {
-					cells = SaveLoadHandler.loadFromFile("/tmp/gol.txt");
-					initializeGrid();
-					activateButtons();
-				};
-			}).start();
+			int returnVal = chooser.showOpenDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				System.out.println("You chose to open this file: " + chooser.getSelectedFile().getAbsolutePath());
+				cells = SaveLoadHandler.loadFromFile(chooser.getSelectedFile());
+				initializeGrid();
+			}
+			activateButtons();
 		}
 	}
 
