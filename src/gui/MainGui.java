@@ -19,10 +19,13 @@ public class MainGui extends JFrame implements ActionListener {
 
 	private final static int XCOUNT = 50;
 	private final static int YCOUNT = 50;
+	private final String RUN = "run Rounds";
+	private final String RUNSTOP = "stop run Rounds";
 	
+	private boolean runStopped = false;
 	private Cell[][] cells;
 	private JButton next = new JButton("next Round");
-	private JButton run = new JButton("run Rounds");
+	private JButton run = new JButton(RUN);
 	private JButton reset = new JButton("reset");
 	private JButton random = new JButton("random");
 	private JTextField numRounds = new JTextField(5);
@@ -97,22 +100,35 @@ public class MainGui extends JFrame implements ActionListener {
 			}).start();
 		}
 		else if(e.getSource() == run){
-			rounds = Integer.parseInt(numRounds.getText());
-			
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					for(int i=0;i<rounds;i++){
-						nextRound();
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+			if(RUNSTOP.equals(run.getText())) {
+				run.setEnabled(false);
+				run.setText(RUN);
+				runStopped = true;
+			}
+			else if(RUN.equals(run.getText())) {
+				runStopped =false;
+				rounds = Integer.parseInt(numRounds.getText());
+				
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						run.setText(RUNSTOP);
+						run.setEnabled(true);
+						for(int i=0; i<rounds; i++){
+							if(runStopped) {
+								break;
+							}
+							nextRound();
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 						}
+						activateButtons();
 					}
-					activateButtons();
-				}
-			}).start();
+				}).start();
+			}
 		}
 		else if(e.getSource() == reset){
 			new Thread(new Runnable() {
