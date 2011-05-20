@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import backend.Cell;
 
 @SuppressWarnings("serial")
-public class MainGui extends JFrame implements ActionListener, Runnable {
+public class MainGui extends JFrame implements ActionListener {
 
 	private final static int XCOUNT = 50;
 	private final static int YCOUNT = 50;
@@ -53,9 +53,8 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 				cs[x].addMouseListener(cs[x]);
 				center.add(cs[x]);
 			}
-			
 		}
-		
+
 		next.addActionListener(this);
 		run.addActionListener(this);
 		reset.addActionListener(this);
@@ -87,19 +86,51 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		deactivateButtons();
 		if(e.getSource() == next){
-			nextRound();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					nextRound();
+					activateButtons();
+				}
+			}).start();
 		}
 		else if(e.getSource() == run){
 			rounds = Integer.parseInt(numRounds.getText());
-			Thread th = new Thread(this);
-			th.start();
+			
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					for(int i=0;i<rounds;i++){
+						nextRound();
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					activateButtons();
+				}
+			}).start();
 		}
 		else if(e.getSource() == reset){
-			resetCells();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					resetCells();
+					activateButtons();
+				}
+			}).start();
 		}
 		else if(e.getSource() == random){
-			randomizeCells();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					randomizeCells();
+					activateButtons();
+				}
+			}).start();
 		}
 	}
 	
@@ -147,20 +178,5 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 		reset.setEnabled(false);
 		random.setEnabled(false);
 		numRounds.setEditable(false);
-	}
-	
-	@Override
-	public void run() {
-		deactivateButtons();
-		for(int i=0;i<rounds;i++){
-			nextRound();
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		activateButtons();
-		
 	}
 }
