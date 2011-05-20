@@ -32,6 +32,7 @@ public class SaveLoadHandler {
 					for (int x = 0; x < cells[y].length; x++) {
 						cells[y][x] = new Cell(x, y, cells);
 						cells[y][x].setAlive(Integer.parseInt(lines.get(y)[x]+"")>0);
+						cells[y][x].addMouseListener(cells[y][x]);
 					}
 				}
 				System.out.println("finished loading");
@@ -46,7 +47,7 @@ public class SaveLoadHandler {
 	}
 	
 	
-	public boolean saveToFile(Cell[][] cells, File f){
+	public static boolean saveToFile(Cell[][] cells, File f){
 		BufferedWriter bw = null;
 		try {
 			bw = new BufferedWriter(new FileWriter(f));
@@ -58,7 +59,7 @@ public class SaveLoadHandler {
 			try {
 				for (int y = 0; y < cells.length; y++) {
 					for (int x = 0; x < cells[y].length; x++) {
-						bw.write(cells[y][x].isAlive()?1:0);
+						bw.write(cells[y][x].isAlive()?1+"":0+"");
 					}
 					bw.newLine();
 				}
@@ -71,7 +72,7 @@ public class SaveLoadHandler {
 		}
 		return true;
 	}
-	public boolean saveToFile(Cell[][] cells, String f){
+	public static boolean saveToFile(Cell[][] cells, String f){
 		return saveToFile(cells, new File(f));
 	}
 }
