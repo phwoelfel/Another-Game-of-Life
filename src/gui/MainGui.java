@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 
 import backend.Cell;
 
+@SuppressWarnings("serial")
 public class MainGui extends JFrame implements ActionListener, Runnable {
 
 	private final static int XCOUNT = 50;
@@ -131,9 +132,26 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 			}
 		}
 	}
+
+	private void activateButtons(){
+		next.setEnabled(true);
+		run.setEnabled(true);
+		reset.setEnabled(true);
+		random.setEnabled(true);
+		numRounds.setEditable(true);
+	}
+
+	private void deactivateButtons(){
+		next.setEnabled(false);
+		run.setEnabled(false);
+		reset.setEnabled(false);
+		random.setEnabled(false);
+		numRounds.setEditable(false);
+	}
 	
 	@Override
 	public void run() {
+		deactivateButtons();
 		for(int i=0;i<rounds;i++){
 			nextRound();
 			try {
@@ -142,6 +160,7 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 				e.printStackTrace();
 			}
 		}
+		activateButtons();
 		
 	}
 }

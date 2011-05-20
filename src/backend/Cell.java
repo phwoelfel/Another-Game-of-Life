@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class Cell extends JPanel implements MouseListener {
 
 	private boolean alive = false;
