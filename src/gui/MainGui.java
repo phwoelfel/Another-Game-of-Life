@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,6 +22,8 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 	private Cell[][] cells;
 	private JButton next = new JButton("next Round");
 	private JButton run = new JButton("run Rounds");
+	private JButton reset = new JButton("reset");
+	private JButton random = new JButton("random");
 	private JTextField numRounds = new JTextField(5);
 	
 	private int rounds;
@@ -54,13 +57,17 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 		
 		next.addActionListener(this);
 		run.addActionListener(this);
+		reset.addActionListener(this);
+		random.addActionListener(this);
 		
 		bottom.add(numRounds);
 		bottom.add(run);
 		bottom.add(next);
+		bottom.add(reset);
+		bottom.add(random);
 		
 		add(bottom, BorderLayout.SOUTH);
-		add(center);
+		add(center, BorderLayout.CENTER);
 		
 		setVisible(true);
 
@@ -87,6 +94,12 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 			Thread th = new Thread(this);
 			th.start();
 		}
+		else if(e.getSource() == reset){
+			resetCells();
+		}
+		else if(e.getSource() == random){
+			randomizeCells();
+		}
 	}
 	
 	private void nextRound(){
@@ -98,11 +111,27 @@ public class MainGui extends JFrame implements ActionListener, Runnable {
 		for (int y = 0; y < cells.length; y++) {
 			for (int x = 0; x < cells[y].length; x++) {
 				cells[y][x].finishRound();
-				cells[y][x].repaint();
 			}
 		}
 	}
 
+	private void resetCells(){
+		for (int y = 0; y < cells.length; y++) {
+			for (int x = 0; x < cells[y].length; x++) {
+				cells[y][x].setAlive(false);
+			}
+		}
+	}
+	
+	private void randomizeCells(){
+		Random rand = new Random();
+		for (int y = 0; y < cells.length; y++) {
+			for (int x = 0; x < cells[y].length; x++) {
+				cells[y][x].setAlive(rand.nextBoolean());
+			}
+		}
+	}
+	
 	@Override
 	public void run() {
 		for(int i=0;i<rounds;i++){

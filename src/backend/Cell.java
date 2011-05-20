@@ -63,6 +63,8 @@ public class Cell extends JPanel implements MouseListener {
 	 */
 	public void setAlive(boolean alive) {
 		this.alive = alive;
+		tempAlive = alive;
+		repaint();
 	}
 
 	public void nextRound() {
@@ -128,6 +130,7 @@ public class Cell extends JPanel implements MouseListener {
 
 	public void finishRound() {
 		alive = tempAlive;
+		repaint();
 	}
 
 	@Override
