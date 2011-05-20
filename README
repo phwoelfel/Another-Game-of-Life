@@ -1,0 +1,8 @@
+* Einrichten der Entwicklungsumgebung
+	* Eclipse herunterladen und installieren
+		* http://www.eclipse.org/downloads/
+* Importieren des Projekts
+	* File -> Import -> General -> Existing Projects into Workspace
+	* Pfad auswählen
+	* Projekt auswählen
+	* Finish
