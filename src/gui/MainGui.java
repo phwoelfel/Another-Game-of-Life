@@ -118,6 +118,7 @@ public class MainGui extends JFrame implements ActionListener {
 							if(runStopped) {
 								break;
 							}
+							numRounds.setText((rounds-(i+1))+"");
 							nextRound();
 							try {
 								Thread.sleep(500);
@@ -125,6 +126,7 @@ public class MainGui extends JFrame implements ActionListener {
 								e.printStackTrace();
 							}
 						}
+						numRounds.setText(rounds+"");
 						activateButtons();
 					}
 				}).start();
